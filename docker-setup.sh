@@ -21,3 +21,6 @@ sudo pip install pgcli
 
 # start postgresql pgcli client in terminal
 sudo pgcli   -h 0.0.0.0   -u osboxes   -p 5432   -d ny_taxi
+
+# download ny taxi trips data
+sudo wget https://nyc-tlc.s3.amazonaws.com/trip+data/yellow_tripdata_2022-01.parquet
