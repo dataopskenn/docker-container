@@ -10,3 +10,14 @@ python pipeline.py # run data engineering pipeline
 
 #start docker postgres image and map it to a memory space locally
 sudo docker run -it   -e POSTGRES_USER="osboxes"   -e POSTGRES_PASSWORD="osboxes.org"   -e POSTGRES_DB="ny_taxi"   -v $(pwd)/postgres_db:/var/lib/postgresql/data   -p 5432:5432postgres:13 
+
+# setup PostgreSQL-14 database locally
+sudo apt-get install -y postgresql-14
+
+# set up pgcli and psycopg2
+sudo apt-get install libpq-dev
+sudo pip install psycopg2
+sudo pip install pgcli
+
+# start postgresql pgcli client in terminal
+sudo pgcli   -h 0.0.0.0   -u osboxes   -p 5432   -d ny_taxi
