@@ -1,5 +1,12 @@
-sudo snap install docker 
-sudo docker run hello-world
-sudo docker build -t test:pycontainer
-sudo docker run -it test:pycontainer
-python pipeline.py
+sudo snap install docker  # install docker using snap in ubuntu linux distribution
+
+sudo docker run hello-world  # check if docker installed properly, this would run without any error files if the install completed 
+
+sudo docker build -t test:pycontainer # build the container of images in the docker container
+
+sudo docker run -it test:pycontainer  # run the container to create and execute commands in the images
+
+python pipeline.py # run data engineering pipeline
+
+#start docker postgres image and map it to a memory space locally
+sudo docker run -it   -e POSTGRES_USER="osboxes"   -e POSTGRES_PASSWORD="osboxes.org"   -e POSTGRES_DB="ny_taxi"   -v $(pwd)/postgres_db:/var/lib/postgresql/data   -p 5432:5432postgres:13 
