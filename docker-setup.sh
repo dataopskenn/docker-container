@@ -9,7 +9,7 @@ sudo docker run -it test:pycontainer  # run the container to create and execute 
 python pipeline.py # run data engineering pipeline
 
 #start docker postgres image and map it to a memory space locally
-sudo docker run -it   -e POSTGRES_USER="osboxes"   -e POSTGRES_PASSWORD="osboxes.org"   -e POSTGRES_DB="ny_taxi"   -v $(pwd)/postgres_db:/var/lib/postgresql/data   -p 5432:5432postgres:13 
+sudo docker run -it   -e POSTGRES_USER="osboxes"   -e POSTGRES_PASSWORD="osboxes.org"   -e POSTGRES_DB="ny_taxi"   -v $(pwd)/postgres_db:/var/lib/postgresql/data   -p 5432:5432 postgres:13 
 
 # setup PostgreSQL-14 database locally
 sudo apt-get install -y postgresql-14
@@ -23,4 +23,7 @@ sudo pip install pgcli
 sudo pgcli   -h 0.0.0.0   -u osboxes   -p 5432   -d ny_taxi
 
 # download ny taxi trips data
-sudo wget https://nyc-tlc.s3.amazonaws.com/trip+data/yellow_tripdata_2022-01.parquet
+sudo wget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet
+
+# start pgadmin image
+sudo docker run -it   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com"   -e PGADMIN_DEFAULT_PASSWORD="osboxes.org"  -p 8080:80 dpage/pgadmin4 
