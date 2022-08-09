@@ -9,5 +9,7 @@ RUN pip install requests
 WORKDIR /app
 
 COPY pipeline.py pipeline.py
+COPY ingest.py ingest.py
+COPY local_ingest.py local_ingest.py
 
 ENTRYPOINT [ "bash" ]

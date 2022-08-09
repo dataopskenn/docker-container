@@ -1,24 +1,26 @@
 import os
 import pandas as pd
 import numpy as np
+import pyarrow
 from sqlalchemy import create_engine
 import time
 
-
-def main(params):
+def main():
 
     # Declare the ingestion script parameters
-    user = params.user
-    password = params.password
-    host = params.host
-    port = params.port
-    db = params.db
-    table_name = params,table_name
-    url = params.url
-    parquet_name = 'output.parquet'
+    user="osboxes"
+    password="osboxes.org"
+    host="localhost"
+    port=5432
+    db="ny_taxi"
+    table_name="ny_taxi"
+    url = r'https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet'
+    parquet_name = 'yellow_tripdata_2022-01.parquet'
 
     # Download parquet file from the url
-    os.system(f"wget {url} -O {parquet_name}")
+    #df = os.system(f"wget {url} -O {parquet_name}")
+    #df = pd.read_parquet(url, engine='pyarrow')
+    df = pd.read_parquet(parquet_name, engine='pyarrow')
 
     # Connect to Postgres with SQLAlchemy
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
@@ -30,12 +32,12 @@ def main(params):
     # Convert Schema to DDL with SQLAlchemy
     df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
 
-    # Insert data into ostgres database by chunks
-    df_iter = pd.read_parquet(parquet_name, iterator=True, chunksize=100000)
-    df = next(df_iter)
+    # Insert data into postgres database by chunks
+    df_iter = pd.read_parquet(parquet_name, iterator=True, chunksize=10000)
+    #df = next(df_iter)
 
     # Insert dataframe values in Postgres Database
-    df.to_sql(name=table_name, con=engine, if_exists='append')
+    #df.to_sql(name=table_name, con=engine, if_exists='append')
 
     # Time the ingestion process and print ingestion status
     while True:
@@ -43,9 +45,6 @@ def main(params):
             t_start = time()
 
             df = next(df_iter)
-
-            df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-            df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
 
             df.to_sql(name=table_name, con=engine, if_exists='append')
 
@@ -57,7 +56,9 @@ def main(params):
             print("That was the last chunk to ingest")
         
         else:
-            print("Completed data ingestion to PostgreSQL")
+            print("Next chunk loading...")
+    
+    print("Completed data ingestion to PostgreSQL")
 
 if '__name__' == '__main__':
     main()
